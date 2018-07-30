@@ -1,13 +1,13 @@
 require("dotenv").config();
 
+var keys = require('./keys.js')
+
+
 // NPM module for Twitter API
 var twitter = require("twitter");
 
-// Used to access keys.js
-var twitterKeysFile = require("./keys.js");
-
 // NPM module for Twitter API
-var spotify = require("spotify");
+var spotify = require("node-spotify-api");
 
 // NPM module for OMDB API
 var request = require("request");
@@ -16,28 +16,31 @@ var request = require("request");
 var fs = require("fs");
 
 // Output files for logs
-var filename = './logs.txt';
+var filename = "./logs.txt";
 
 // NPM module used for logging solution
-var log = require('simple-node-logger').createSimpleFileLogger(filename);
+var log = require("simple-node-logger").createSimpleFileLogger(filename);
 
 // All log information printed to log.txt
-log.SetLevel('all')
+log.SetLevel("all");
 
 // Parameters and Controller
 // ---------
-
+// Declaring variables for omdb/spotify switch statement
+var movieTitle;
+var songTitle;
 // Action request
 var action = process.argv[2];
 
 // Request specific information based on action
 var argument = "";
 
+var spotify = new Spotify(keys.spotify);
+var client = new Twitter(keys.twitter);
 // Controller function - which action is taken
 function doSomething(action, argument) {
     // Defines specific data relating to the action
     argument = getThirdArgument();
-
     switch (action) {
         //Get tweet list
         //case for switch statement
@@ -48,10 +51,7 @@ function doSomething(action, argument) {
 
         //get spotify info
         case "spotify-this-song":
-
-            //song title argument
-            var songTitle = argument;
-
+            songTitle = argument;
             // Default to specific song if no argument
             if (songTitle === "") {
                 lookupSpecificSong();
@@ -66,7 +66,7 @@ function doSomething(action, argument) {
         case "movie-this":
 
             //First gets movie title argument
-            var movieTitle = argument;
+            movieTitle = argument;
 
             // default movie if no movie title provided
             if (movieTitle === "") {
@@ -89,7 +89,7 @@ function getThirdArgument() {
     //All arguments in an array
     argumentArray = process.argv;
     // Loops through words in node argument
-    for (var i = 3; i < argumentArray.length; i++) {
+    for (i = 3; i < argumentArray.length; i++) {
         argument += argumentArray[i];
     }
     return argument;
@@ -100,13 +100,13 @@ function getMyTweets() {
     var client = new Twitter(twitterKeysFile.twitterKeys);
 
     //Search parameters for last 20 tweets
-    var params = [q: '@JivovAlexander', count: 20];
+    var params = {q: "@JivovAlexander", count: 20};
 
     //Shows up to last 20 tweets in terminal
-    client.get('search/tweets', params, function (error, tweets, response) {
+    client.get("search/tweets", params, function (error, tweets, response) {
         if (!error) {
             //Prints tweet text + creation date in loop
-            for (var i = 0; i < tweets.statuses.length; i++) {
+            for (i = 0; i < tweets.statuses.length; i++) {
                 var tweetText = tweets.statuses[i].text;
                 logOutput("Tweet Text: " + tweetText);
                 var tweetCreationDate = tweets.statuses[i].text;
@@ -121,12 +121,13 @@ function getMyTweets() {
 // Calls Spotify Api to retrieve song info
 function getSongInfo(songTitle) {
     //Spotify AP gets track
-    spotify.search({ type: 'track', query: songTitle }, function (err, data) {
+    spotify.search({ type: "track", query: songTitle },
+    function (err, data) {
         if (err) {
-            logOutput(err)lastreturn
+            logOutput(err)
         }
 
-        // limit Spotify modules returns from 20 to 1 song. 
+        // limit Spotify modules returns from 20 to 1 song.
         var artistsArray = data.tracks.items[0].album.artists;
 
         //Array to hold artist names when more than one artist exists for a song
@@ -149,10 +150,11 @@ function getSongInfo(songTitle) {
 }
 
 //When no song title provided, defaults to No Brainer - Justin Bieber
-function lookupSpecificSong();
+//function lookupSpecificSong();
 
 //Calls Spotify API to retrive basic song
-spotify.lookup({ type: 'track', id: '5WvAo7DNuPRmk4APhdPzi8' }, function (err, data) {
+spotify.lookup({ type: "track", id: "5WvAo7DNuPRmk4APhdPzi8" },
+  function (err, data) {
     if (err) {
         logOutput.error(err);
         return
@@ -162,14 +164,14 @@ spotify.lookup({ type: 'track', id: '5WvAo7DNuPRmk4APhdPzi8' }, function (err, d
     logOutput("Song: " + data.name);
     logOutput("Spotify Preview URL: " + data.preview_url);
     logOutput("Album Name: " + data.album.name);
-}
+
 
 });
 
-}
+
 
 // Use fs to take the text inside random.txt and do something
-function doWhatItSays() {
+/* function doWhatItSays() {
     fs.readFile("random.txt", "utf8", function (err, data) {
         if (err) {
             logOutput(error);
@@ -180,7 +182,7 @@ function doWhatItSays() {
             action = randomArray[0];
 
             //third argument is second array item
-            argument = randomArray[i];
+            argument = randomArray[1];
 
             //Main controller call to do something based on action/arg
             doSomething(action, argument);
@@ -195,6 +197,7 @@ function logOutput(logText) {
     console.log(logText);
 }
 }
-
+*/
+doSomething(action)
 
 
