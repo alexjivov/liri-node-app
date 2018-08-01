@@ -70,7 +70,7 @@ function doSomething(action, argument) {
 
             // default movie if no movie title provided
             if (movieTitle === "") {
-                getMovieInfo("Scarface");
+                getMovieInfo("Mr. Nobody");
             } else {
                 getMovieInfo(movieTitle);
             }
