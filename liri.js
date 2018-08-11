@@ -4,10 +4,10 @@ var keys = require('./keys.js')
 
 
 // NPM module for Twitter API
-var twitter = require("twitter");
+var Twitter = require("twitter");
 
 // NPM module for Twitter API
-var spotify = require("node-spotify-api");
+var Spotify = require("node-spotify-api");
 
 // NPM module for OMDB API
 var request = require("request");
@@ -22,7 +22,7 @@ var filename = "./logs.txt";
 var log = require("simple-node-logger").createSimpleFileLogger(filename);
 
 // All log information printed to log.txt
-log.SetLevel("all");
+// log.SetLevel("all");
 
 // Parameters and Controller
 // ---------
@@ -152,7 +152,7 @@ function getSongInfo(songTitle) {
 //When no song title provided, defaults to No Brainer - Justin Bieber
 //function lookupSpecificSong();
 
-//Calls Spotify API to retrive basic song
+//Calls Spotify API to retrieve basic song
 spotify.lookup({ type: "track", id: "5WvAo7DNuPRmk4APhdPzi8" },
   function (err, data) {
     if (err) {
@@ -167,6 +167,8 @@ spotify.lookup({ type: "track", id: "5WvAo7DNuPRmk4APhdPzi8" },
 
 
 });
+
+
 
 
 
