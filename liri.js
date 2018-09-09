@@ -38,7 +38,7 @@ var argument = "";
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 // Controller function - which action is taken
-function doSomething(action, argument) {
+//function doSomething(action, argument) {
     // Defines specific data relating to the action
     argument = getThirdArgument();
     switch (action) {
@@ -53,13 +53,13 @@ function doSomething(action, argument) {
         case "spotify-this-song":
             songTitle = argument;
             // Default to specific song if no argument
-            if (songTitle === "") {
-                lookupSpecificSong();
-                //Else look up song based ont title
-            } else {
+            // if (songTitle === "") {
+            //     lookupSpecificSong();
+            //     //Else look up song based ont title
+            // } else {
                 //song info from spotify
                 getSongInfo(songTitle);
-            }
+            //}
             break;
 
         //Gets movie information
@@ -82,10 +82,11 @@ function doSomething(action, argument) {
             break;
     }
 
-}
+//}
 
 // Return third argument - i.e. song title when requesting song information
 function getThirdArgument() {
+    console.log("3rdarg")
     //All arguments in an array
     argumentArray = process.argv;
     // Loops through words in node argument
@@ -120,15 +121,10 @@ function getMyTweets() {
 
 // Calls Spotify Api to retrieve song info
 function getSongInfo(songTitle) {
+    console.log(songTitle)
     //Spotify AP gets track
-    spotify.search({ type: "track", query: songTitle },
-    function (err, data) {
-        if (err) {
-            logOutput(err)
-        }
-
-        // limit Spotify modules returns from 20 to 1 song.
-        var artistsArray = data.tracks.items[0].album.artists;
+    spotify.search({ type: "track", query: songTitle }).then(function(response) {
+       var artistsArray = response.tracks.items[0].album.artists;
 
         //Array to hold artist names when more than one artist exists for a song
         var artistsNames = [];
@@ -140,33 +136,44 @@ function getSongInfo(songTitle) {
         //Makes artists array into a string to print cleaner
         var artists = artistsNames.join(", ");
 
-        //prints actual song data - artists, song name, preview url, and album
+        //prints actual song response - artists, song name, preview url, and album
         logOutput("Artist(s): " + artists);
-        logOutput("Song: " + data.tracks.items[0].name);
-        logOutput("Spotify Preview URL: " + data.tracks.items[0].preview_url);
-        logOutput("Album Name: " + data.tracks.items[0].album.name);
-    });
+        logOutput("Song: " + response.tracks.items[0].name);
+        logOutput("Spotify Preview URL: " + response.tracks.items[0].preview_url);
+        logOutput("Album Name: " + response.tracks.items[0].album.name);
+      })
+      .catch(function(err) {
+        console.log(err);
+      })
+    // function (err, response) {
+    //     if (err) {
+    //         logOutput(err)
+    //     }
 
-}
+        // limit Spotify modules returns from 20 to 1 song.
+       
+    //});
+
+};
 
 //When no song title provided, defaults to No Brainer - Justin Bieber
 //function lookupSpecificSong();
 
 //Calls Spotify API to retrieve basic song
-spotify.lookup({ type: "track", id: "5WvAo7DNuPRmk4APhdPzi8" },
-  function (err, data) {
-    if (err) {
-        logOutput.error(err);
-        return
-    }
+// spotify.search({ type: "track", id: "5WvAo7DNuPRmk4APhdPzi8" },
+//   function (err, data) {
+//     if (err) {
+//         logOutput.error(err);
+//         return
+//     }
 
-    logOutput("Artist: " + data.artists[0].name);
-    logOutput("Song: " + data.name);
-    logOutput("Spotify Preview URL: " + data.preview_url);
-    logOutput("Album Name: " + data.album.name);
+    // logOutput("Artist: " + data.artists[0].name);
+    // logOutput("Song: " + data.name);
+    // logOutput("Spotify Preview URL: " + data.preview_url);
+    // logOutput("Album Name: " + data.album.name);
 
 
-});
+// });
 
 
 
@@ -193,13 +200,13 @@ spotify.lookup({ type: "track", id: "5WvAo7DNuPRmk4APhdPzi8" },
 
 }
 
-//Logs data to the terminal and output to a text file
+//Logs data to the terminal and output to a text file*/
 function logOutput(logText) {
     log.info(logText);
     console.log(logText);
 }
-}
-*/
-doSomething(action)
+
+
+// doSomething(action)
 
 
